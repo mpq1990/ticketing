@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: ingress-servicee
+  name: ingress-service
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/use-regex: 'true'
@@ -13,4 +13,8 @@ spec:
           - path: /api/users/?(.*)
             backend:
               serviceName: auth-svc
+              servicePort: 3000
+          - path: /?(.*)
+            backend:
+              serviceName: client-svc
               servicePort: 3000

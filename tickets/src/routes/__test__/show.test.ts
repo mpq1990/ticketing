@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 
 it('returns a 404 if thee ticket is not found', async () => {
   await request(app)
-    .get(`/api/tickets/${mongoose.Types.ObjectId()}`)
+    .get(`/api/tickets/${mongoose.Types.ObjectId().toHexString()}`)
     .send()
     .expect(404);
 });

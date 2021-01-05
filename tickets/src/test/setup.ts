@@ -40,7 +40,7 @@ afterAll(async () => {
 global.signin = () => {
   const userJwt = jwt.sign(
     {
-      id: mongoose.Types.ObjectId(),
+      id: mongoose.Types.ObjectId().toHexString(),
       password: 'password',
     },
     process.env.JWT_KEY!

@@ -2,6 +2,8 @@ import request from 'supertest';
 import { app } from '../../app';
 import mongoose from 'mongoose';
 import { Ticket, TicketDoc } from '../../models/ticket';
+import { Order } from '../../models/order';
+import { OrderState } from '@mpqticket/common';
 
 const buildTicket = async (event: string) => {
   const ticket = Ticket.build({
@@ -24,14 +26,14 @@ const buildOrder = async (user: any, ticket: TicketDoc) => {
   return response.body;
 };
 
-it('should not allow an unauthenticated user to view an order', async () => {
+it('should not allow an unauthenticated user to delete an order', async () => {
   await request(app)
-    .get(`/api/orders/${mongoose.Types.ObjectId().toHexString()}`)
+    .delete(`/api/orders/${mongoose.Types.ObjectId().toHexString()}`)
     .send()
     .expect(401);
 });
 
-it('should not allow an authenticated user to view an order belong to another user', async () => {
+it('should not allow an authenticated user to delete an order belonging to another user', async () => {
   const ticketOne = await buildTicket('concert');
   const ticketTwo = await buildTicket('museum');
 
@@ -42,13 +44,21 @@ it('should not allow an authenticated user to view an order belong to another us
   await buildOrder(userTwo, ticketTwo);
 
   const response = await request(app)
-    .get(`/api/orders/${orderOne.id}`)
+    .delete(`/api/orders/${orderOne.id}`)
     .set('Cookie', userTwo)
     .send()
     .expect(401);
 });
 
-it('should allow an authenticated user to view an order belonging to them', async () => {
+it('should send back a not found error if order not present', async () => {
+  const response = await request(app)
+    .delete(`/api/orders/${mongoose.Types.ObjectId()}`)
+    .set('Cookie', global.signin())
+    .send()
+    .expect(404);
+});
+
+it('should allow an authenticated user to delete an order belonging to them', async () => {
   const ticketOne = await buildTicket('concert');
   const ticketTwo = await buildTicket('museum');
 
@@ -59,10 +69,13 @@ it('should allow an authenticated user to view an order belonging to them', asyn
   await buildOrder(userTwo, ticketTwo);
 
   const response = await request(app)
-    .get(`/api/orders/${orderOne.id}`)
+    .delete(`/api/orders/${orderOne.id}`)
     .set('Cookie', userOne)
     .send()
-    .expect(200);
+    .expect(204);
 
-  expect(response.body.ticket.title).toEqual(ticketOne.title);
+  const updatedOrder = await Order.findById(orderOne.id);
+  expect(updatedOrder!.status).toEqual(OrderState.Cancelled);
 });
+
+it.todo('publishes an event of order cancel');

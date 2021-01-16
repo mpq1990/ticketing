@@ -47,7 +47,7 @@ const start = async () => {
     console.log('Connected to mongodb');
 
     app.listen(3000, () => {
-      console.log('tickets listening on port 3000...');
+      console.log('Orders listening on port 3000...');
     });
   } catch (err) {
     console.log('in Error');

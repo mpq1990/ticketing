@@ -1,4 +1,3 @@
-import { response } from 'express';
 import request from 'supertest';
 import { app } from '../../app';
 import { Ticket, TicketDoc } from '../../models/ticket';
@@ -24,7 +23,7 @@ const buildOrder = async (user: any, ticket: TicketDoc) => {
   return response.body;
 };
 
-it('should not allow an unauthenticated user to create an order', async () => {
+it('should not allow an unauthenticated user to get order list', async () => {
   await request(app).get('/api/orders').send().expect(401);
 });
 
@@ -46,9 +45,9 @@ it('returns orders that belong to the user', async () => {
   const userOne = global.signin();
   const userTwo = global.signin();
 
-  const orderOne = await buildOrder(userOne, ticketOne);
-  const orderTwo = await buildOrder(userTwo, ticketTwo);
-  const orderThree = await buildOrder(userTwo, ticketThree);
+  await buildOrder(userOne, ticketOne);
+  await buildOrder(userTwo, ticketTwo);
+  await buildOrder(userTwo, ticketThree);
 
   const responseOne = await request(app)
     .get('/api/orders')

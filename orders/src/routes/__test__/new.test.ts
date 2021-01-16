@@ -68,3 +68,5 @@ it('reserves a ticket', async () => {
 
   expect(response.body.ticket.title).toEqual('concert');
 });
+
+it.todo('emits an order created event');

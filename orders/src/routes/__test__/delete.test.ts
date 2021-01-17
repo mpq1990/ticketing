@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import { Ticket, TicketDoc } from '../../models/ticket';
 import { Order } from '../../models/order';
 import { OrderState } from '@mpqticket/common';
+import { natsWrapper } from '../../nats-wrapper';
 
 const buildTicket = async (event: string) => {
   const ticket = Ticket.build({
@@ -78,4 +79,21 @@ it('should allow an authenticated user to delete an order belonging to them', as
   expect(updatedOrder!.status).toEqual(OrderState.Cancelled);
 });
 
-it.todo('publishes an event of order cancel');
+it('publishes an event of order cancel', async () => {
+  const ticketOne = await buildTicket('concert');
+  const ticketTwo = await buildTicket('museum');
+
+  const userOne = global.signin();
+  const userTwo = global.signin();
+
+  const orderOne = await buildOrder(userOne, ticketOne);
+  await buildOrder(userTwo, ticketTwo);
+
+  const response = await request(app)
+    .delete(`/api/orders/${orderOne.id}`)
+    .set('Cookie', userOne)
+    .send()
+    .expect(204);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
+});

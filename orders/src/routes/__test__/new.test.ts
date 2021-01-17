@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import { Order } from '../../models/order';
 import { Ticket } from '../../models/ticket';
 import { OrderState } from '@mpqticket/common';
+import { natsWrapper } from '../../nats-wrapper';
 
 it('should not allow an unauthenticated user to create an order', async () => {
   await request(app).post('/api/orders').send({}).expect(401);
@@ -69,4 +70,20 @@ it('reserves a ticket', async () => {
   expect(response.body.ticket.title).toEqual('concert');
 });
 
-it.todo('emits an order created event');
+it('emits an order created event', async () => {
+  const ticket = Ticket.build({
+    title: 'concert',
+    price: 20,
+  });
+  await ticket.save();
+
+  const response = await request(app)
+    .post('/api/orders')
+    .set('Cookie', global.signin())
+    .send({
+      ticketId: ticket.id,
+    })
+    .expect(201);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
+});

@@ -70,3 +70,20 @@ it('ack the message', async () => {
 
   expect(msg.ack).toHaveBeenCalled();
 });
+
+it('ack the message but doesnt cancelled an already completed order', async () => {
+  const { listener, data, msg } = await setup();
+
+  const order = await Order.findById(data.orderId);
+
+  order!.status = OrderState.Complete;
+  await order!.save();
+
+  await listener.onMessage(data, msg);
+
+  const updatedOrder = await Order.findById(data.orderId);
+
+  expect(updatedOrder!.status).toEqual(OrderState.Complete);
+
+  expect(msg.ack).toHaveBeenCalled();
+});

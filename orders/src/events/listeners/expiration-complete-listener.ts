@@ -8,7 +8,6 @@ import {
 import { OrderCancelledPublisher } from '../publishers/order-cancelled-publisher';
 import { queueGroupName } from './queue-group-name';
 import { Order } from '../../models/order';
-import { natsWrapper } from '../../nats-wrapper';
 
 export class ExpirationCompleteListener extends Listener<ExpirationCompleteEvent> {
   subject: Subjects.ExpirationComplete = Subjects.ExpirationComplete;
@@ -27,7 +26,7 @@ export class ExpirationCompleteListener extends Listener<ExpirationCompleteEvent
 
     await order.save();
 
-    await new OrderCancelledPublisher(natsWrapper.client).publish({
+    await new OrderCancelledPublisher(this.client).publish({
       id: order.id,
       version: order.version,
       ticket: {

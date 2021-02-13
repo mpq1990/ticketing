@@ -25,6 +25,10 @@ const start = async () => {
     throw new Error('NATS_CLIENT_ID must be defined');
   }
 
+  if (!process.env.STRIPE_SECRET) {
+    throw new Error('STRIPE_SECRET must be defined');
+  }
+
   try {
     await natsWrapper.connect(
       process.env.NATS_CLUSTER_ID,

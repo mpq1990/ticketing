@@ -11,3 +11,6 @@ node_modules
 .history/
 
 nats-test
+
+infra/k8s/stripe-secret.yaml
+infra/k8s/jwt-secret.yaml

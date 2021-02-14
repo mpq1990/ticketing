@@ -15,7 +15,7 @@ const AppComponent = ({ Component, pageProps, currentUser }) => {
 
 AppComponent.getInitialProps = async ({ Component, ctx }) => {
   let currentUser;
-  const client = buildClient(ctx);
+  const client = buildClient(ctx, 'http://auth-svc:3000');
   try {
     const response = await client.get('/api/users/currentuser');
     currentUser = response.data.currentUser;

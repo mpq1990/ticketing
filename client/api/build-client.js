@@ -1,10 +1,11 @@
 import axios from 'axios';
 
-export default ({ req }) => {
+// @TODO - hack for ingress in minkube being a bitch
+export default ({ req }, serverUrl) => {
   const options =
     typeof window === 'undefined'
       ? {
-          baseURL: 'http://auth-svc:3000',
+          baseURL: serverUrl,
           // "http://ingress-nginx-controller.kube-system.svc.cluster.local", // @TODO fix this
           headers: req.headers,
         }

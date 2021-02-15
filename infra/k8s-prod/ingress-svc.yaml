@@ -7,7 +7,11 @@ metadata:
     nginx.ingress.kubernetes.io/use-regex: 'true'
 spec:
   rules:
+<<<<<<< HEAD
     - host: ticketing.dev
+=======
+    - host: www.mpq1990.com
+>>>>>>> chore: update prod host
       http:
         paths:
           - path: /api/users/?(.*)

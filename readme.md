@@ -1,5 +1,9 @@
 # Ticketing App - A Microservice architecture based implementation
 
+## Architecture
+
+![Alt text](./misc/ticketing-architecture-1.png?raw=true 'A Microservice architectural approach')
+
 ## Services
 
 1. Auth
@@ -59,7 +63,3 @@ Postman collections are also included and can be found in the misc folder.
 ## Payments
 
 - Creates a payment for the order and changes order status. Payment with stripe included. Can be enhanced for more, i.e. paypal etc
-
-## Architecture
-
-![Alt text](./misc/ticketing-architecture-1.png?raw=true 'A Microservice architectural approach')

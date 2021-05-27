@@ -62,4 +62,4 @@ Postman collections are also included and can be found in the misc folder.
 
 ## Architecture
 
-![Alt text](./misc/ticketing-architecture.png?raw=true 'A Microservice architectural approach')
+![Alt text](./misc/ticketing-architecture-1.png?raw=true 'A Microservice architectural approach')
